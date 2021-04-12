@@ -25,4 +25,4 @@ WORKDIR /app
 COPY ./src ./
 
 # Start DeepCreamPy-erogaki-wrapper.
-ENTRYPOINT ["conda", "run", "--name", "DeepCreamPy-erogaki-wrapper", "python", "main.py"]
+ENTRYPOINT ["conda", "run", "--name", "DeepCreamPy-erogaki-wrapper", "python", "wrapper_main.py"]
