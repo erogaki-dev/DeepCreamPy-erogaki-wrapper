@@ -21,6 +21,12 @@ COPY ./DeepCreamPy ./
 ## Setup second part DeepCreamPy-erogaki-wrapper.
 WORKDIR /app
 
+# Copy the requirements file.
+COPY ./src/requirements.txt ./
+
+# Install the dependencies.
+RUN conda run --name DeepCreamPy-erogaki-wrapper pip install -r requirements.txt
+
 # Copy the source code.
 COPY ./src ./
 
