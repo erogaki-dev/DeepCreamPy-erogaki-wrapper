@@ -35,10 +35,10 @@ class Decensor():
 
     def load_model(self):
         if self.model is None :
-            self.model = InpaintNN(bar_model_name = "./DeepCreamPy/erogaki-models/09-11-2019 DCPv2 model/bar/Train_775000.meta",
-                                   bar_checkpoint_name = "./DeepCreamPy/erogaki-models/09-11-2019 DCPv2 model/bar/",
-                                   mosaic_model_name = "./DeepCreamPy/erogaki-models/09-11-2019 DCPv2 model/mosaic/Train_290000.meta",
-                                   mosaic_checkpoint_name = "./DeepCreamPy/erogaki-models/09-11-2019 DCPv2 model/models/mosaic/",
+            self.model = InpaintNN(bar_model_name = "../model/09-11-2019 DCPv2 model/bar/Train_775000.meta",
+                                   bar_checkpoint_name = "../model/09-11-2019 DCPv2 model/bar/",
+                                   mosaic_model_name = "../model/09-11-2019 DCPv2 model/mosaic/Train_290000.meta",
+                                   mosaic_checkpoint_name = "../model/09-11-2019 DCPv2 model/models/mosaic/",
                                    is_mosaic=self.is_mosaic)
         print("load model finished")
 

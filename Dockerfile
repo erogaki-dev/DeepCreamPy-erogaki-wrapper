@@ -1,4 +1,20 @@
-FROM continuumio/miniconda3
+FROM alpine AS model
+
+## Setup model for DeepCreamPy.
+WORKDIR /model
+
+# Download model.
+RUN wget https://github.com/erogaki-dev/erogaki-models/releases/download/v0.0.1/09-11-2019.DCPv2.model.tar.gz
+
+# Unpack model.
+RUN tar -xf 09-11-2019.DCPv2.model.tar.gz
+
+FROM continuumio/miniconda3 AS deploy
+
+## Copy model.
+WORKDIR /model
+
+COPY --from=model ["/model/09-11-2019 DCPv2 model", "./09-11-2019 DCPv2 model"]
 
 ## Setup first part of DeepCreamPy-erogaki-wrapper.
 WORKDIR /app
