@@ -29,7 +29,7 @@ WORKDIR /app/DeepCreamPy
 COPY ./DeepCreamPy/requirements-cpu.txt ./
 
 # Install the dependencies.
-RUN conda run --name DeepCreamPy-erogaki-wrapper pip install -r requirements-cpu.txt
+RUN conda run --no-capture-output --name DeepCreamPy-erogaki-wrapper pip install -r requirements-cpu.txt
 
 # Copy the source code.
 COPY ./DeepCreamPy ./
@@ -41,10 +41,10 @@ WORKDIR /app
 COPY ./src/requirements.txt ./
 
 # Install the dependencies.
-RUN conda run --name DeepCreamPy-erogaki-wrapper pip install -r requirements.txt
+RUN conda run --no-capture-output --name DeepCreamPy-erogaki-wrapper pip install -r requirements.txt
 
 # Copy the source code.
 COPY ./src ./
 
 # Start DeepCreamPy-erogaki-wrapper.
-ENTRYPOINT ["conda", "run", "--name", "DeepCreamPy-erogaki-wrapper", "python", "wrapper_main.py"]
+ENTRYPOINT ["conda", "run", "--no-capture-output", "--name", "DeepCreamPy-erogaki-wrapper", "python", "wrapper_main.py"]
