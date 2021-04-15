@@ -38,9 +38,7 @@ def main():
         print("received censored image")
 
         censored_img_data = r.get("censored-images:%s" % uuid.decode())
-        censored_img = bytes_to_image(censored_img_data)
-
-        decensored_img = decensor_instance.decensor_image_variation(censored_img, censored_img, 0)
+        decensored_img = decensor_instance.decensor_image(bytes_to_image(censored_img_data))
 
         r.set("decensored-images:%s" % uuid.decode(), image_to_bytes(decensored_img))
 
