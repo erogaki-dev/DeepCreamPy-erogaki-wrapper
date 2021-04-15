@@ -2,6 +2,7 @@
 import config
 from model import InpaintNN
 from libs.utils import *
+from NoRegionsFoundError import NoRegionsFoundError
 
 # external library
 import numpy as np
@@ -52,8 +53,7 @@ class Decensor():
         print("Found {region_count} censored regions in this image!".format(region_count = len(regions)))
 
         if len(regions) == 0:
-            print("No green (0,255,0) regions detected! Make sure you're using exactly the right color.")
-            return
+            raise NoRegionsFoundError("No masked regions detected.")
 
         print("Found {} masked regions".format(len(regions)))
 
