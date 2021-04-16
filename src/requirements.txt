@@ -1,2 +1,2 @@
 redis
-erogaki-wrapper-shared-python>=0.6.1
+erogaki-wrapper-shared-python>=0.7
