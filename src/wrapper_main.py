@@ -11,6 +11,7 @@ from NoRegionsFoundError import NoRegionsFoundError
 from PIL import Image
 import redis
 import io
+from erogaki_wrapper_shared_python.ErogakiWrapperConfig import ErogakiWrapperConfig
 
 # convert encoded image file to PIL image object
 def bytes_to_image(bytes):
@@ -25,7 +26,8 @@ def image_to_bytes(image):
     return img_file.getvalue()
 
 def main():
-    r = redis.Redis(host="localhost", port=6379, db=0)
+    config = ErogakiWrapperConfig()
+    r = redis.Redis(host=config.redis.hostname, port=config.redis.port, db=config.redis.db)
 
     # Test the connection to Redis.
     r.get("connection-test")
