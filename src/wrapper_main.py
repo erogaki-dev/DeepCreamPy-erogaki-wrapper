@@ -32,7 +32,8 @@ def main():
             decensored_img = decensor_instance.decensor_image(ImageProcessor.bytes_to_image(censored_img_data))
             r.set("decensored-images:%s" % uuid.decode(), ImageProcessor.image_to_bytes(decensored_img))
         except NoMaskedRegionsFoundError as e:
-            print(e.json)
+            print(e.description)
+            r.set("errors:%s" % uuid.decode(), e.json)
 
 if __name__ == "__main__":
     main()
