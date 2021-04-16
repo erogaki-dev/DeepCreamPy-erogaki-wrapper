@@ -2,5 +2,5 @@ from erogaki_wrapper_shared_python.AbstractErogakiWrapperError import AbstractEr
 
 class AbstractDCPErogakiWrapperError(AbstractErogakiWrapperError):
     def __init__(self, description):
-        self.component = "hent-AI-erogaki-wrapper"
+        self.component = "DeepCreamPy-erogaki-wrapper"
         super().__init__(description)
