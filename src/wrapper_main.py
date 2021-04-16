@@ -5,7 +5,7 @@ path.append(getcwd() + "/DeepCreamPy")
 
 # Local Libraries.
 from wrapper_decensor import Decensor
-from NoRegionsFoundError import NoRegionsFoundError
+from NoMaskedRegionsFoundError import NoMaskedRegionsFoundError
 
 # External Libraries.
 from PIL import Image
@@ -43,8 +43,8 @@ def main():
         try:
             decensored_img = decensor_instance.decensor_image(bytes_to_image(censored_img_data))
             r.set("decensored-images:%s" % uuid.decode(), image_to_bytes(decensored_img))
-        except NoRegionsFoundError as e:
-            print(e.message)
+        except NoMaskedRegionsFoundError as e:
+            print(e.json)
 
 if __name__ == "__main__":
     main()
