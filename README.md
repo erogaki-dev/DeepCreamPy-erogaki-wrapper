@@ -35,7 +35,7 @@ Your `erogaki-models` volume should then have the following subdirectories:
 Then finally run the container like so:
 
 ```
-docker run -it -v erogaki-models:/model --network=host deepcreampy-erogaki-wrapper
+docker run -it -v erogaki-models:/model -e CENSOR_TYPE=bar|mosaic --network=host deepcreampy-erogaki-wrapper
 ```
 
 ## Using the `Dockerfile-dev`
@@ -55,5 +55,5 @@ docker image build -f Dockerfile-dev -t deepcreampy-erogaki-wrapper:dev .
 And run a container like this:
 
 ```
-docker run -it -v erogaki-models:/model --network=host deepcreampy-erogaki-wrapper
+docker run -it -v erogaki-models:/model -e CENSOR_TYPE=bar|mosaic --network=host deepcreampy-erogaki-wrapper
 ```
