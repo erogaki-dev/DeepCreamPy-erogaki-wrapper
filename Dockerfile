@@ -1,10 +1,5 @@
 FROM continuumio/miniconda3 AS deploy
 
-## Copy model.
-WORKDIR /model
-
-COPY ["./models/09-11-2019 DCPv2 model", "./09-11-2019 DCPv2 model"]
-
 ## Setup first part of DeepCreamPy-erogaki-wrapper.
 WORKDIR /app
 
