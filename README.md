@@ -1,3 +1,5 @@
+[![Docker](https://github.com/erogaki-dev/DeepCreamPy-erogaki-wrapper/actions/workflows/docker-build-and-publish.yaml/badge.svg)](https://github.com/erogaki-dev/DeepCreamPy-erogaki-wrapper/actions/workflows/docker-build-and-publish.yaml)
+
 # DeepCreamPy-erogaki-wrapper
 
 ## Using the Dockerfile
