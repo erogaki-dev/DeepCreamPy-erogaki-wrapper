@@ -19,17 +19,28 @@ def main():
     # Test the connection to Redis.
     r.get("connection-test")
 
-    decensor_instance = Decensor()
-    decensor_instance.load_model()
+    decensor_bar = Decensor(is_mosaic=False)
+    decensor_bar.load_model()
+
+    decensor_mosaic = Decensor(is_mosaic=True)
+    decensor_mosaic.load_model()
 
     while True:
-        print("ready to receive censored images")
-        _, uuid = r.blpop("censored-images:deepcreampy:bar", 0)
-        print("received censored image")
+        print("ready to receive decensor requests")
+        key, uuid = r.blpop(["decensor-requests:bar", "decensor-requests:mosaic"], 0)
+        print("received decensor request")
 
-        censored_img_data = r.get("censored-images:%s" % uuid.decode())
+        masked_img_data = r.get("masked-images:%s" % uuid.decode())
+        masked_img = ImageProcessor.bytes_to_image(masked_img_data)
+
         try:
-            decensored_img = decensor_instance.decensor_image(ImageProcessor.bytes_to_image(censored_img_data))
+            if key.decode() == "decensor-requests:mosaic":
+                censored_img_data = r.get("censored-images:%s" % uuid.decode())
+                censored_img = ImageProcessor.bytes_to_image(censored_img_data)
+                decensored_img = decensor_mosaic.decensor(masked_img, censored_img)
+            else:
+                decensored_img = decensor_bar.decensor(masked_img)
+
             r.set("decensored-images:%s" % uuid.decode(), ImageProcessor.image_to_bytes(decensored_img))
         except NoMaskedRegionsFoundError as e:
             print(e.description)

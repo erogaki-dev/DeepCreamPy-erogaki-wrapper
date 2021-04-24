@@ -10,13 +10,11 @@ from PIL import Image
 import tensorflow as tf
 
 class Decensor():
-    def __init__(self):
+    def __init__(self, is_mosaic):
         args = config.get_args()
         self.mask_color = [args.mask_color_red/255.0, args.mask_color_green/255.0, args.mask_color_blue/255.0]
         self.model = None
-
-    def init(self):
-        self.load_model()
+        self.is_mosaic = is_mosaic
 
     def find_mask(self, colored):
         mask = np.ones(colored.shape, np.uint8)
@@ -29,30 +27,42 @@ class Decensor():
             self.model = InpaintNN(bar_model_name = "../model/09-11-2019 DCPv2 model/bar/Train_775000.meta",
                                    bar_checkpoint_name = "../model/09-11-2019 DCPv2 model/bar/",
                                    mosaic_model_name = "../model/09-11-2019 DCPv2 model/mosaic/Train_290000.meta",
-                                   mosaic_checkpoint_name = "../model/09-11-2019 DCPv2 model/models/mosaic/",
-                                   is_mosaic=False)
+                                   mosaic_checkpoint_name = "../model/09-11-2019 DCPv2 model/mosaic/",
+                                   is_mosaic=self.is_mosaic)
         print("load model finished")
 
-    def decensor_image(self, original_img):
-        width, height = original_img.size
+    def decensor(self, colored, ori=None):
+        if not self.is_mosaic:
+            ori = colored
+        
+        width, height = ori.size
 
         #save the alpha channel if the image has an alpha channel
         has_alpha = False
-        if original_img.mode == "RGBA":
+        if ori.mode == "RGBA":
             has_alpha = True
-            alpha_channel = np.asarray(original_img)[:,:,3]
+            alpha_channel = np.asarray(ori)[:,:,3]
             alpha_channel = np.expand_dims(alpha_channel, axis =-1)
-            original_img = original_img.convert("RGB")
+            ori = ori.convert("RGB")
 
-        ori_array = image_to_array(original_img)
+        ori_array = image_to_array(ori)
         ori_array = np.expand_dims(ori_array, axis = 0)
 
-        mask = self.find_mask(ori_array)
+        if self.is_mosaic:
+            colored = colored.convert("RGB")
+            color_array = image_to_array(colored)
+            color_array = np.expand_dims(color_array, axis = 0)
+            mask = self.find_mask(color_array)
+            mask_reshaped = mask[0,:,:,:] * 255.0
+            mask_img = Image.fromarray(mask_reshaped.astype("uint8"))
+        else:
+            mask = self.find_mask(ori_array)
 
-        regions = find_regions(original_img.convert("RGB"), [v*255 for v in self.mask_color])
+        #colored image is only used for finding the regions
+        regions = find_regions(colored.convert("RGB"), [v*255 for v in self.mask_color])
         print("Found {region_count} censored regions in this image!".format(region_count = len(regions)))
 
-        if len(regions) == 0:
+        if len(regions) == 0 and not self.is_mosaic:
             raise NoMaskedRegionsFoundError("No masked regions detected.")
 
         print("Found {} masked regions".format(len(regions)))
@@ -60,8 +70,8 @@ class Decensor():
         output_img_array = ori_array[0].copy()
 
         for region_counter, region in enumerate(regions, 1):
-            bounding_box = expand_bounding(original_img, region, expand_factor=1.5)
-            crop_img = original_img.crop(bounding_box)
+            bounding_box = expand_bounding(ori, region, expand_factor=1.5)
+            crop_img = ori.crop(bounding_box)
 
             #convert mask back to image
             mask_reshaped = mask[0,:,:,:] * 255.0
@@ -78,8 +88,9 @@ class Decensor():
             #convert mask_img back to array
             mask_array = image_to_array(mask_img)
 
-            a, b = np.where(np.all(mask_array == 0, axis = -1))
-            crop_img_array[a,b,:] = 0.
+            if not self.is_mosaic:
+                a, b = np.where(np.all(mask_array == 0, axis = -1))
+                crop_img_array[a,b,:] = 0.
 
             crop_img_array = np.expand_dims(crop_img_array, axis = 0)
             mask_array = np.expand_dims(mask_array, axis = 0)
